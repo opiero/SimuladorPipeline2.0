@@ -40,77 +40,77 @@ public class StringtoInstruction {
 
             case "add":
                 this.instruction = new Instruction(OperandType.ADD, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "sub":
                 this.instruction = new Instruction(OperandType.SUB, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "mult":
                 this.instruction = new Instruction(OperandType.MULT, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "div":
                 this.instruction = new Instruction(OperandType.DIV, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "and":
                 this.instruction = new Instruction(OperandType.AND, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "or":
                 this.instruction = new Instruction(OperandType.OR, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "xor":
                 this.instruction = new Instruction(OperandType.XOR, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "sll":
                 this.instruction = new Instruction(OperandType.SLL, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "srl":
                 this.instruction = new Instruction(OperandType.SRL, convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[3]),
-                        convertRegisterStringToInteger(fragments[1]), 0);
+                        convertRegisterStringToInteger(fragments[1]), 0, command);
                 break;
             case "addi":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.ADDI);
+                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.ADDI, command);
                 break;
             case "andi":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.ANDI);
+                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.ANDI, command);
                 break;
             case "ori":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.ORI);
+                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.ORI, command);
                 break;
             case "xori":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.XORI);
+                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.XORI, command);
                 break;
             case "beq":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.BEQ);
+                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.BEQ, command);
                 break;
             case "bne":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.BNE);
+                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.BNE, command);
                 break;
             case "lw":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[3]), convertRegisterStringToInteger(fragments[1]),
-                        convertOffsetToString(fragments[2]), 0, OperandType.LW);
+                        convertOffsetToString(fragments[2]), 0, OperandType.LW, command);
                 break;
             case "sw":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[3]), convertRegisterStringToInteger(fragments[1]),
-                        convertOffsetToString(fragments[2]), 0, OperandType.SW);
+                        convertOffsetToString(fragments[2]), 0, OperandType.SW, command);
                 break;
             case "j":
-                this.instruction = new Instruction(OperandType.J,0, 0);
+                this.instruction = new Instruction(OperandType.J,0, 0, command);
                 break;
             case "nop":
-                this.instruction = new Instruction(OperandType.NOP);
+                this.instruction = new Instruction(OperandType.NOP, command);
 
 
         }

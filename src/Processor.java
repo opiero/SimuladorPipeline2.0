@@ -26,6 +26,22 @@ public class Processor {
     private MemWb memWb;
     private WriteBack writeBack;
 
+    public IFId getIfId() {
+        return ifId;
+    }
+
+    public IdEx getIdEx() {
+        return idEx;
+    }
+
+    public ExMem getExMem() {
+        return exMem;
+    }
+
+    public MemWb getMemWb() {
+        return memWb;
+    }
+
     public Processor (ArrayList<Instruction>AlInstructionMemory) {
 
         clock = new LinkedBlockingQueue<Integer>();

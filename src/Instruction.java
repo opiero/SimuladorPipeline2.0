@@ -19,6 +19,8 @@ public class Instruction {
 
     private int iTarget;
 
+    private String instruction;
+
     public InstructionType getEType() {
         return EType;
     }
@@ -63,39 +65,47 @@ public class Instruction {
         return iTarget;
     }
 
-    public Instruction(OperandType EOperand, int iRt, int iRs, int iRd, int iShamt) {
+    public String getInstruction(){
+        return instruction;
+    }
+
+    public Instruction(OperandType EOperand, int iRt, int iRs, int iRd, int iShamt, String instruction) {
         this.EOperand = EOperand;
         this.iRt = iRt;
         this.iRs = iRs;
         this.iRd = iRd;
         this.iShamt = iShamt;
         this.EType = InstructionType.R;
+        this.instruction = instruction;
 
     }
 
-    public Instruction(int iITypeRs, int iITypeRt, int iImmediateValue, int iTarget, OperandType EOperand) {
+    public Instruction(int iITypeRs, int iITypeRt, int iImmediateValue, int iTarget, OperandType EOperand, String instruction) {
         this.iITypeRs = iITypeRs;
         this.iITypeRt = iITypeRt;
         this.iImmediateValue = iImmediateValue;
         this.iTarget = iTarget;
         this.EOperand = EOperand;
         this.EType = InstructionType.I;
+        this.instruction = instruction;
     }
 
-    public Instruction(OperandType EOperand, int iData, int iTarget) {
+    public Instruction(OperandType EOperand, int iData, int iTarget, String instruction) {
         this.EOperand = EOperand;
         this.iData = iData;
         this.iTarget = iTarget;
         this.EType = InstructionType.J;
+        this.instruction = instruction;
 
     }
 
-    public Instruction(OperandType EOperand) {
+    public Instruction(OperandType EOperand, String instruction) {
 
         if (EOperand == OperandType.NOP) {
 
             this.EOperand = EOperand;
             this.EType = InstructionType.NOP;
+            this.instruction = instruction;
 
         }
 

@@ -174,6 +174,68 @@ public class GUI {
         }
     }
 
+    public void getAllParameters(){
+        String thing;
+
+        thing = "" + processor.getIfId().getCIr().getInstruction();
+        if(!thing.equals("")) registers[0].setText(thing);
+
+        thing = "" + processor.getIfId().getiNPC();
+        if(!thing.equals("")) registers[1].setText(thing);
+
+        thing = "" + processor.getIfId().getPC();
+        if(!thing.equals("")) registers[2].setText(thing);
+
+
+        try {
+            thing = "" + processor.getIdEx().getCir().getInstruction();
+        }catch (Exception e){
+        }
+        if(!thing.equals("")) registers[3].setText(thing);
+
+        thing = "" + processor.getIdEx().getiA();
+        if(!thing.equals("")) registers[4].setText(thing);
+
+        thing = "" + processor.getIdEx().getiB();
+        if(!thing.equals("")) registers[5].setText(thing);
+
+        thing = "" + processor.getIdEx().getiNPC();
+        if(!thing.equals("")) registers[6].setText(thing);
+
+        thing = "" + processor.getIdEx().getiImmediateValue();
+        if(!thing.equals("")) registers[7].setText(thing);
+
+
+        try {
+            thing = "" + processor.getExMem().getCIr().getInstruction();
+        }catch (Exception e) {
+        }
+        if(!thing.equals("")) registers[8].setText(thing);
+
+        thing = "" + processor.getExMem().getiAluOutput();
+        if(!thing.equals("")) registers[9].setText(thing);
+
+        thing = "" + processor.getExMem().getiB();
+        if(!thing.equals("")) registers[10].setText(thing);
+
+
+        try {
+            thing = "" + processor.getMemWb().getCIr().getInstruction();
+        } catch (Exception e){
+
+        }
+        if(!thing.equals("")) registers[11].setText(thing);
+
+        thing = "" + processor.getMemWb().getiAluOutput();
+        if(!thing.equals("")) registers[12].setText(thing);
+
+        thing = "" + processor.getMemWb().getiLMD();
+        if(!thing.equals("")) registers[13].setText(thing);
+
+        System.out.println("YAY");
+
+    }
+
     // Function that sets the first interface, the one that the user chooses how many instructions he/she wants to pass
     public void instructionSizeSelection(){
         window = new JFrame("How many instructions will you add ?");
@@ -205,7 +267,6 @@ public class GUI {
 
         window.setVisible(true); // properly shows the window
     }
-
 
     // Function that sets the second interface, the one that the user selects the parameters of the instructions and add then to the processor
     public void instructionsSelection(){
@@ -255,7 +316,7 @@ public class GUI {
                 }
                 if(counter == nInstructions) {
                     for (; counter < 16; counter++) {
-                        alIinstructions.add(new Instruction(OperandType.NOP));
+                        alIinstructions.add(new Instruction(OperandType.NOP, "nop"));
                     }
                     runButton.setVisible(true);
                 }
@@ -271,7 +332,9 @@ public class GUI {
                 window.setLocation(0,0);
                 processor = new Processor(getAlIinstructions());
                 printSystem();
-                processor.run();
+                counter = 0;
+                processor.runNextClock(counter);
+                //processor.run();
             }
         });
 
@@ -400,7 +463,7 @@ public class GUI {
         window2 = new JFrame("Processor");
 
         window2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window2.setSize(800, 250);
+        window2.setSize(1000, 250);
         window2.setLocationRelativeTo(null);
 
         panel3 = (JPanel)window2.getContentPane();
@@ -410,6 +473,16 @@ public class GUI {
         layout.setAutoCreateContainerGaps(true);
 
         nextClock = new JButton("Next Clock");
+
+        nextClock.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                counter++;
+                processor.runNextClock(counter);
+                getAllParameters();
+
+            }
+        });
 
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
