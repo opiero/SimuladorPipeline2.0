@@ -13,6 +13,7 @@ public class Processor {
 
     private ArrayList<Integer> AlIRegistersBank;
     private ArrayList<Instruction> AlInstructionMemory;
+    Queue<PipelineStates> states;
     private Queue<Integer> clock;
 
 
@@ -45,6 +46,7 @@ public class Processor {
     public Processor (ArrayList<Instruction>AlInstructionMemory) {
 
         clock = new LinkedBlockingQueue<Integer>();
+        states = new LinkedBlockingQueue<PipelineStates>();
 
         AlIRegistersBank = new ArrayList<Integer>();
        for (int i = 0; i < 16; i++)
@@ -369,9 +371,6 @@ public class Processor {
 
    public void runNextClock (int actualClock) {
 
-       Queue<PipelineStates> states = new LinkedBlockingQueue<PipelineStates>();
-
-       Instruction instruction;
 
        if (actualClock == 0) {
            states.add(PipelineStates.IFetch);
@@ -380,10 +379,12 @@ public class Processor {
 
        while (!states.isEmpty()) {
 
-           PipelineStates actual = states.poll();
+
 
            if (clock.peek() > actualClock)
                return;
+
+           PipelineStates actual = states.poll();
 
            switch (actual) {
 
@@ -393,9 +394,8 @@ public class Processor {
                    iFetch.setInstruction(AlInstructionMemory.get(actualClock));
                    iFetchIfId(false, actualClock);
                    if (actualClock < this.AlInstructionMemory.size() - 1) {
-
                        states.add(PipelineStates.IFetch);
-                       clock.add(clock.peek());
+                       clock.add(actualClock+1);
 
                    }
                    break;
