@@ -13,6 +13,7 @@ public class Processor {
 
     private ArrayList<Integer> AlIRegistersBank;
     private ArrayList<Instruction> AlInstructionMemory;
+    private Queue<Integer> clock;
 
 
     private IFetch iFetch;
@@ -26,6 +27,8 @@ public class Processor {
     private WriteBack writeBack;
 
     public Processor (ArrayList<Instruction>AlInstructionMemory) {
+
+        clock = new LinkedBlockingQueue<Integer>();
 
         AlIRegistersBank = new ArrayList<Integer>();
        for (int i = 0; i < 16; i++)
@@ -346,6 +349,74 @@ public class Processor {
 
 
 
+   }
+
+   public void runNextClock (int actualClock) {
+
+       Queue<PipelineStates> states = new LinkedBlockingQueue<PipelineStates>();
+
+       Instruction instruction;
+
+       if (actualClock == 0) {
+           states.add(PipelineStates.IFetch);
+           clock.add(0);
+       }
+
+       while (!states.isEmpty()) {
+
+           PipelineStates actual = states.poll();
+
+           if (clock.peek() > actualClock)
+               return;
+
+           switch (actual) {
+
+               case IFetch:
+                   states.add(PipelineStates.Decode);
+                   clock.add(clock.poll() + 1);
+                   iFetch.setInstruction(AlInstructionMemory.get(actualClock));
+                   iFetchIfId(false, actualClock);
+                   if (actualClock < this.AlInstructionMemory.size() - 1) {
+
+                       states.add(PipelineStates.IFetch);
+                       clock.add(clock.peek());
+
+                   }
+                   break;
+
+               case Decode:
+                   states.add(PipelineStates.Execute);
+                   clock.add(clock.poll() + 1);
+                   ifIdDecode();
+                   decodeIdEx();
+                   break;
+
+               case Execute:
+                   states.add(PipelineStates.Memory);
+                   clock.add(clock.poll() + 1);
+                   idExExecute();
+                   executeExMem();
+                   break;
+
+               case Memory:
+                   states.add(PipelineStates.WriteBack);
+                   clock.add(clock.poll() + 1);
+                   exMemMemory();
+                   memoryMemWb();
+                   break;
+
+               case WriteBack:
+                   memWbWriteBack();
+                   System.out.println("Registradores: " + this.AlIRegistersBank);
+                   System.out.println();
+                   System.out.println();
+                   break;
+
+
+           }
+
+
+       }
    }
 
 
