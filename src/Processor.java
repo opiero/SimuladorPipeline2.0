@@ -177,7 +177,6 @@ public class Processor {
             idEx.setiA(decode.getCIr().getiITypeRs());
             idEx.setiB(decode.getCIr().getiITypeRt());
             idEx.setiDestiny(decode.getCIr().getiITypeRt());
-            System.out.println(idEx.getiDestiny());
 
             idEx.setiImmediateValue(decode.getCIr().getiImmediateValue());
 
@@ -213,8 +212,6 @@ public class Processor {
         exMem.setCIr(idEx.getCir());
 
         exMem.setiAluOutput(executeCommand(exMem.getCIr().getEType(), exMem.getCIr().getEOperand()));
-
-        //System.out.println("Alu output: " + exMem.getiAluOutput());
 
         exMem.setiB(execute.getiB());
 
@@ -295,12 +292,9 @@ public class Processor {
 
        int i = 0;
 
-       System.out.println("Tamanho: " + AlInstructionMemory.size());
-
        while (!states.isEmpty()) {
 
            PipelineStates actual = states.poll();
-           //System.out.println("i before switch: " + i);
 
 
            switch (actual){
@@ -308,7 +302,6 @@ public class Processor {
                case IFetch:
                    states.add(PipelineStates.Decode);
                    iFetch.setInstruction(AlInstructionMemory.get(i));
-                   //System.out.println("i: " + i);
                    iFetchIfId(false, i);
                    if (i < this.AlInstructionMemory.size() - 1) {
 
@@ -339,6 +332,8 @@ public class Processor {
                case WriteBack:
                    memWbWriteBack();
                    System.out.println("Registradores: " + this.AlIRegistersBank);
+                   System.out.println();
+                   System.out.println();
                    break;
 
 
@@ -348,8 +343,6 @@ public class Processor {
 
 
        }
-
-
 
 
 

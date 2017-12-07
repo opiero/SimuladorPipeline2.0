@@ -96,7 +96,7 @@ public class Memory {
         else if (this.bLoad)
             this.iContent = this.AlIMemoryData.get(this.iAluOutput);
 
-        //System.out.println("Memoria: " + this.AlIMemoryData);
+        System.out.println("Memoria: " + this.AlIMemoryData);
 
 
 
