@@ -8,24 +8,41 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 public class GUI {
+    // Window
     private JFrame window;
-    private JComboBox<Integer> size;
+
+    // Panels for organization of the many components used
     private JPanel panel1;
-    private JButton Set;
     private JPanel panel2;
+
+    // Labels that tells the user what is each parameter that he/she is setting on the interface
+    private JLabel l1, l2, l3;
+
+    // Java Combo Boxes to show user the options that he/she have for each parameter on the interface
+    private JComboBox<Integer> size;
+    private JComboBox<String> operandTypes;
+    private JComboBox<Integer> r1, r2, r3;
+
+    // Buttons for actions
+    private JButton Set;
     private JButton addButton;
     private JButton runButton;
-    private JComboBox<String> operandTypes;
+
+    // Java Text Area for showing user the instructions he/she already selected
     private JTextArea instructions;
-    private JComboBox<Integer> r1, r2, r3;
-    private JLabel l1, l2, l3;
+
+    // Integers for knowing how many instructions the user wants to pass for the processor and to count how many he/she already selected
     private int nInstructions, counter;
+
+    // Vectors of Integers for Java Combo Boxes initialization
     private Integer vi[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15}, vi2[] = {0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64};
 
-    StringtoInstruction stiInstruction;
-    ArrayList<Instruction> alIinstructions;
-    Processor processor;
+    // Tools needed for the proper execution of the pipeline, an array list of instructions, a StringtoInstruction to convert a string into an instruction and the processor
+    private StringtoInstruction stiInstruction;
+    private ArrayList<Instruction> alIinstructions;
+    private Processor processor;
 
+    // Constructor, allocating space for the tools needed and setting the counter with zero
     public GUI(){
         this.counter = 0;
         stiInstruction = new StringtoInstruction();
@@ -41,13 +58,10 @@ public class GUI {
         this.nInstructions = nInstructions;
     }
 
-    /*public static void main (String [] args){
-        GUI gui = new GUI();
-        gui.instructionSizeSelection();
-    }*/
-
+    // Function that, using the data selected by the user on the interface, generates the String of the struction selected, that after will be converted to an Instruction
     public String createInstructionString(){
         String instructionI = operandTypes.getSelectedItem().toString();
+
         if(r1.isVisible()){
             if(l1.getText().equals("Rd: ") || l1.getText().equals("Rt: ") || l1.getText().equals("Rs: "))
                 instructionI += " $r" + r1.getItemAt(r1.getSelectedIndex());
@@ -72,30 +86,7 @@ public class GUI {
         return instructionI;
     }
 
-
-    public void instructionSizeSelection(){
-        window = new JFrame("How many instructions will you add ?");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setSize(400, 100);
-        window.setLocationRelativeTo(null);
-        panel1 = (JPanel)window.getContentPane();
-        panel1.setLayout(new BorderLayout());
-        Integer vi3[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16};
-        size = new JComboBox<>(vi3);
-        panel1.add(size, BorderLayout.CENTER);
-        Set = new JButton("Set");
-        panel1.add(Set, BorderLayout.AFTER_LAST_LINE);
-        window.setVisible(true);
-        Set.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                setnInstructions(size.getItemAt(size.getSelectedIndex()));
-                window.setVisible(false);
-                instructionsSelection();
-            }
-        });
-    }
-
+    // Function to fill or refill the Java Combo Boxes with the proper values for each parameter
     public void fillJComboBox(int box, int fillOption){
         if(box == 1){
             if(fillOption == 1){
@@ -135,32 +126,73 @@ public class GUI {
         }
     }
 
+    // Function that sets the first interface, the one that the user chooses how many instructions he/she wants to pass
+    public void instructionSizeSelection(){
+        window = new JFrame("How many instructions will you add ?");
+
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setSize(400, 100);
+        window.setLocationRelativeTo(null); // Centralize the window
+
+        panel1 = (JPanel)window.getContentPane();
+        panel1.setLayout(new BorderLayout());
+
+        Integer vi3[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16}; // Another vector for Java Combo Box initialization
+        size = new JComboBox<>(vi3);
+
+        panel1.add(size, BorderLayout.CENTER);
+
+        Set = new JButton("Set");
+        panel1.add(Set, BorderLayout.AFTER_LAST_LINE);
+
+        // Action Listener for the button, so that when the user makes the click, the number of instructions he/she chose will be setted and the next interface will be shown
+        Set.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                setnInstructions(size.getItemAt(size.getSelectedIndex()));
+                window.setVisible(false);
+                instructionsSelection();
+            }
+        });
+
+        window.setVisible(true); // properly shows the window
+    }
+
+
     public void instructionsSelection(){
         window = new JFrame("Instruction Selection");
+
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(800, 400);
         window.setLocationRelativeTo(null);
+
         panel2 = (JPanel)window.getContentPane();
         GroupLayout layout = new GroupLayout(panel2);
         panel2.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+
         String vs[] = {"add", "sub", "mult", "div", "and", "or", "xor", "sll", "srl", "addi", "andi", "ori", "xori", "beq", "bne", "lw", "sw", "j", "nop"};
         operandTypes = new JComboBox<>(vs);
+
         l1 = new JLabel("Rd: ");
         l2 = new JLabel("Rs: ");
         l3 = new JLabel("Rt: ");
+
         r1 = new JComboBox<>(vi);
         r2 = new JComboBox<>(vi);
         r3 = new JComboBox<>(vi);
+
         addButton = new JButton("Add Instruction");
         runButton = new JButton("Run!");
         runButton.setVisible(false);
+
         instructions = new JTextArea();
         instructions.setSize(400, 500);
         instructions.setEditable(false);
         instructions.setBackground(Color.WHITE);
 
+        // Action Listener for the button add, so that when the user makes the click, an instruction with the parameter chosen by him/her will be created and passed for the array list of instructions, and to limitate te user with the number of instructions he/she previously chose
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -181,6 +213,7 @@ public class GUI {
             }
         });
 
+        // Action Listener for the button run, so that when the user makes the click the processor runs with the instructions he/she chose
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -190,6 +223,7 @@ public class GUI {
             }
         });
 
+        // Item Listener for the Java Combo Box, so that when the user select what kind of instruction he/she wants to set the parameters shown change for the parameters necessary for the instruction selected
         operandTypes.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -260,6 +294,7 @@ public class GUI {
             }
         });
 
+        // Layout setup
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -281,7 +316,6 @@ public class GUI {
                 .addComponent(addButton)
                 .addComponent(runButton)
         );
-
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
