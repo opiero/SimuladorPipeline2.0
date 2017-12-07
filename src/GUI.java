@@ -9,14 +9,17 @@ import java.util.logging.Level;
 
 public class GUI {
     // Window
-    private JFrame window;
+    private JFrame window, window2;
 
     // Panels for organization of the many components used
     private JPanel panel1;
     private JPanel panel2;
+    private JPanel panel3;
 
     // Labels that tells the user what is each parameter that he/she is setting on the interface
     private JLabel l1, l2, l3;
+    private JLabel IFID, IDEX, EXMEM, MEMWB;
+    private JLabel[] registerLabels;
 
     // Java Combo Boxes to show user the options that he/she have for each parameter on the interface
     private JComboBox<Integer> size;
@@ -27,9 +30,13 @@ public class GUI {
     private JButton Set;
     private JButton addButton;
     private JButton runButton;
+    private JButton nextClock;
 
     // Java Text Area for showing user the instructions he/she already selected
     private JTextArea instructions;
+
+    // Java Text Fields for showing user the values inside the registers
+    private JTextField[] registers;
 
     // Integers for knowing how many instructions the user wants to pass for the processor and to count how many he/she already selected
     private int nInstructions, counter;
@@ -56,6 +63,47 @@ public class GUI {
 
     public void setnInstructions(int nInstructions) {
         this.nInstructions = nInstructions;
+    }
+
+    public void turnInvisible(){
+        operandTypes.setVisible(false);
+        l1.setVisible(false);
+        l2.setVisible(false);
+        l3.setVisible(false);
+        r1.setVisible(false);
+        r2.setVisible(false);
+        r3.setVisible(false);
+        addButton.setVisible(false);
+        runButton.setVisible(false);
+    }
+
+    // Initialize the Java Text Fields and the Labels for the third interface
+    public void initializeThirdInterface(){
+        IFID = new JLabel("IFID");
+        IDEX = new JLabel("IDEX");
+        EXMEM = new JLabel("EXMEM");
+        MEMWB = new JLabel("MEMWB");
+        registers = new JTextField[14];
+        registerLabels = new JLabel[14];
+        registerLabels[0] = new JLabel("IR: ");
+        registerLabels[1] = new JLabel("NPC: ");
+        registerLabels[2] = new JLabel("PC: ");
+        registerLabels[3] = new JLabel("IR: ");
+        registerLabels[4] = new JLabel("A: ");
+        registerLabels[5] = new JLabel("B: ");
+        registerLabels[6] = new JLabel("NPC: ");
+        registerLabels[7] = new JLabel("Imm: ");
+        registerLabels[8] = new JLabel("IR: ");
+        registerLabels[9] = new JLabel("ALUOut: ");
+        registerLabels[10] = new JLabel("B: ");
+        registerLabels[11] = new JLabel("IR: ");
+        registerLabels[12] = new JLabel("ALUOut: ");
+        registerLabels[13] = new JLabel("LMD: ");
+        for(int i = 0 ; i < 14 ; i++) {
+            registers[i] = new JTextField("0");
+            registers[i].setEditable(false);
+            registers[i].setBackground(Color.WHITE);
+        }
     }
 
     // Function that, using the data selected by the user on the interface, generates the String of the struction selected, that after will be converted to an Instruction
@@ -159,6 +207,7 @@ public class GUI {
     }
 
 
+    // Function that sets the second interface, the one that the user selects the parameters of the instructions and add then to the processor
     public void instructionsSelection(){
         window = new JFrame("Instruction Selection");
 
@@ -217,8 +266,11 @@ public class GUI {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                window.setVisible(false);
+                turnInvisible();
+                window.setSize(420,500);
+                window.setLocation(0,0);
                 processor = new Processor(getAlIinstructions());
+                printSystem();
                 processor.run();
             }
         });
@@ -297,49 +349,159 @@ public class GUI {
         // Layout setup
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(operandTypes)
-                        .addComponent(instructions, 50, GroupLayout.DEFAULT_SIZE, 500)
-                )
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(l1)
-                        .addComponent(r1)
-                )
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(l2)
-                        .addComponent(r2)
-                )
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(l3)
-                        .addComponent(r3)
-                )
-                .addComponent(addButton)
-                .addComponent(runButton)
-        );
-        layout.setHorizontalGroup(
-                layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(operandTypes)
-                        .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(operandTypes)
+                                .addComponent(instructions, 50, GroupLayout.DEFAULT_SIZE, 500)
+                        )
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(l1)
                                 .addComponent(r1)
                         )
-                        .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(l2)
                                 .addComponent(r2)
                         )
-                        .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(l3)
                                 .addComponent(r3)
                         )
                         .addComponent(addButton)
-                        .addComponent(runButton))
+                        .addComponent(runButton)
+        );
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(operandTypes)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(l1)
+                                        .addComponent(r1)
+                                )
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(l2)
+                                        .addComponent(r2)
+                                )
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(l3)
+                                        .addComponent(r3)
+                                )
+                                .addComponent(addButton)
+                                .addComponent(runButton))
 
-                .addComponent(instructions, 400, GroupLayout.DEFAULT_SIZE, 400)
+                        .addComponent(instructions, 400, GroupLayout.DEFAULT_SIZE, 400)
         );
 
         window.setVisible(true);
 
     }
 
+    public void printSystem(){
+        initializeThirdInterface();
+
+        window2 = new JFrame("Processor");
+
+        window2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window2.setSize(800, 250);
+        window2.setLocationRelativeTo(null);
+
+        panel3 = (JPanel)window2.getContentPane();
+        GroupLayout layout = new GroupLayout(panel3);
+        panel3.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        nextClock = new JButton("Next Clock");
+
+        layout.setVerticalGroup(
+                layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(IFID)
+                        .addComponent(IDEX)
+                        .addComponent(EXMEM)
+                        .addComponent(MEMWB))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(registerLabels[0])
+                        .addComponent(registers[0])
+                        .addComponent(registerLabels[3])
+                        .addComponent(registers[3])
+                        .addComponent(registerLabels[8])
+                        .addComponent(registers[8])
+                        .addComponent(registerLabels[11])
+                        .addComponent(registers[11]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(registerLabels[1])
+                        .addComponent(registers[1])
+                        .addComponent(registerLabels[4])
+                        .addComponent(registers[4])
+                        .addComponent(registerLabels[9])
+                        .addComponent(registers[9])
+                        .addComponent(registerLabels[12])
+                        .addComponent(registers[12]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(registerLabels[2])
+                        .addComponent(registers[2])
+                        .addComponent(registerLabels[5])
+                        .addComponent(registers[5])
+                        .addComponent(registerLabels[10])
+                        .addComponent(registers[10])
+                        .addComponent(registerLabels[13])
+                        .addComponent(registers[13]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(registerLabels[6])
+                        .addComponent(registers[6]))
+                    .addGroup(layout
+                    .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(registerLabels[7])
+                        .addComponent(registers[7]))
+                    .addComponent(nextClock)
+        );
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(registerLabels[0])
+                        .addComponent(registerLabels[1])
+                        .addComponent(registerLabels[2])
+                        .addComponent(nextClock))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(IFID)
+                        .addComponent(registers[0])
+                        .addComponent(registers[1])
+                        .addComponent(registers[2]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(registerLabels[3])
+                        .addComponent(registerLabels[4])
+                        .addComponent(registerLabels[5])
+                        .addComponent(registerLabels[6])
+                        .addComponent(registerLabels[7]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(IDEX)
+                        .addComponent(registers[3])
+                        .addComponent(registers[4])
+                        .addComponent(registers[5])
+                        .addComponent(registers[6])
+                        .addComponent(registers[7]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(registerLabels[8])
+                        .addComponent(registerLabels[9])
+                        .addComponent(registerLabels[10]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(EXMEM)
+                        .addComponent(registers[8])
+                        .addComponent(registers[9])
+                        .addComponent(registers[10]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(registerLabels[11])
+                        .addComponent(registerLabels[12])
+                        .addComponent(registerLabels[13]))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(MEMWB)
+                        .addComponent(registers[11])
+                        .addComponent(registers[12])
+                        .addComponent(registers[13]))
+
+        );
+
+        window2.setVisible(true);
+
+
+    }
 }
