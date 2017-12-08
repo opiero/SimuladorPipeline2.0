@@ -52,7 +52,7 @@ public class WriteBack {
 
     /**
      * Represents the mux that chooses between aluoutput or lmd
-     * @return
+     * @return the result of the MUX for what will be passed on
      */
     public int aluOutputOrLMD() {
         if (this.bControl)
