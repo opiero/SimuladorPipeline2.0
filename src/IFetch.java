@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * This class represents the IFetch state
+ */
 public class IFetch {
 
     private int iPC;
