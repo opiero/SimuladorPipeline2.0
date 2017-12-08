@@ -9,17 +9,20 @@ import java.util.logging.Level;
 
 public class GUI {
     // Window
-    private JFrame window, window2;
+    private JFrame window, window2, window3, window4;
 
     // Panels for organization of the many components used
     private JPanel panel1;
     private JPanel panel2;
     private JPanel panel3;
+    private JPanel panel4;
+    private JPanel panel5;
 
     // Labels that tells the user what is each parameter that he/she is setting on the interface
     private JLabel l1, l2, l3;
     private JLabel IFID, IDEX, EXMEM, MEMWB;
     private JLabel[] registerLabels;
+    private JLabel[] registerBankAndMemoryLabels;
 
     // Java Combo Boxes to show user the options that he/she have for each parameter on the interface
     private JComboBox<Integer> size;
@@ -37,6 +40,7 @@ public class GUI {
 
     // Java Text Fields for showing user the values inside the registers
     private JTextField[] registers;
+    private JTextField[] registerBankAndMemory;
 
     // Integers for knowing how many instructions the user wants to pass for the processor and to count how many he/she already selected
     private int nInstructions, counter;
@@ -85,6 +89,14 @@ public class GUI {
         MEMWB = new JLabel("MEMWB");
         registers = new JTextField[14];
         registerLabels = new JLabel[14];
+        registerBankAndMemoryLabels = new JLabel[48];
+        registerBankAndMemory = new JTextField[48];
+        for(int i = 0 ; i < 32 ; i++){
+            registerBankAndMemoryLabels[i] = new JLabel("MEM[" + (i*4) + "]: ");
+        }
+        for(int i = 32 ; i < 48 ; i++){
+            registerBankAndMemoryLabels[i] = new JLabel("$R" + (i-32) + ": ");
+        }
         registerLabels[0] = new JLabel("IR: ");
         registerLabels[1] = new JLabel("NPC: ");
         registerLabels[2] = new JLabel("PC: ");
@@ -103,6 +115,11 @@ public class GUI {
             registers[i] = new JTextField("0");
             registers[i].setEditable(false);
             registers[i].setBackground(Color.WHITE);
+        }
+        for(int i = 0 ; i < 48 ; i++){
+            registerBankAndMemory[i] = new JTextField("0");
+            registerBankAndMemory[i].setEditable(false);
+            registerBankAndMemory[i].setBackground(Color.WHITE);
         }
     }
 
@@ -180,10 +197,10 @@ public class GUI {
         thing = "" + processor.getIfId().getCIr().getInstruction();
         if(!thing.equals("")) registers[0].setText(thing);
 
-        thing = "" + processor.getIfId().getiNPC();
+        thing = "" + processor.getIfId().getiNPC()*4;
         if(!thing.equals("")) registers[1].setText(thing);
 
-        thing = "" + processor.getIfId().getPC();
+        thing = "" + processor.getIfId().getPC()*4;
         if(!thing.equals("")) registers[2].setText(thing);
 
 
@@ -199,7 +216,7 @@ public class GUI {
         thing = "" + processor.getIdEx().getiB();
         if(!thing.equals("")) registers[5].setText(thing);
 
-        thing = "" + processor.getIdEx().getiNPC();
+        thing = "" + processor.getIdEx().getiNPC()*4;
         if(!thing.equals("")) registers[6].setText(thing);
 
         thing = "" + processor.getIdEx().getiImmediateValue();
@@ -232,7 +249,13 @@ public class GUI {
         thing = "" + processor.getMemWb().getiLMD();
         if(!thing.equals("")) registers[13].setText(thing);
 
-        System.out.println("YAY");
+        for(int i = 0 ; i < 32 ; i++){
+            registerBankAndMemory[i].setText("" + processor.getMemory().getAlIMemoryDataAtIndex(i));
+        }
+        for(int i = 32 ; i < 48 ; i++){
+            registerBankAndMemory[i].setText("" + processor.getRegisterBankAtIndex(i-32));
+        }
+
 
     }
 
@@ -317,6 +340,7 @@ public class GUI {
                 if(counter == nInstructions) {
                     for (; counter < 16; counter++) {
                         alIinstructions.add(new Instruction(OperandType.NOP, "nop"));
+                        instructions.append("nop" + System.lineSeparator());
                     }
                     runButton.setVisible(true);
                 }
@@ -329,12 +353,11 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 turnInvisible();
                 window.setSize(420,500);
-                window.setLocation(0,0);
+                window.setLocation(20,20);
                 processor = new Processor(getAlIinstructions());
                 printSystem();
                 counter = 0;
-                processor.runNextClock(counter);
-                //processor.run();
+                window.setTitle("Instruction Memory");
             }
         });
 
@@ -466,19 +489,43 @@ public class GUI {
         window2.setSize(1000, 250);
         window2.setLocationRelativeTo(null);
 
+        window3 = new JFrame("Register Bank");
+
+        window3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window3.setSize(200,450);
+        window3.setLocation(20, 530);
+
+        window4 = new JFrame("Data Memory");
+
+        window4.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window4.setSize(1200,200);
+        window4.setLocation(470, 20);
+
         panel3 = (JPanel)window2.getContentPane();
         GroupLayout layout = new GroupLayout(panel3);
         panel3.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
+        panel4 = (JPanel)window3.getContentPane();
+        GroupLayout layout2 = new GroupLayout(panel4);
+        panel4.setLayout(layout2);
+        layout2.setAutoCreateGaps(true);
+        layout2.setAutoCreateContainerGaps(true);
+
+        panel5 = (JPanel)window4.getContentPane();
+        GroupLayout layout3 = new GroupLayout(panel5);
+        panel5.setLayout(layout3);
+        layout3.setAutoCreateGaps(true);
+        layout3.setAutoCreateContainerGaps(true);
+
         nextClock = new JButton("Next Clock");
 
         nextClock.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                counter++;
                 processor.runNextClock(counter);
+                counter++;
                 getAllParameters();
 
             }
@@ -573,7 +620,254 @@ public class GUI {
 
         );
 
+        layout2.setVerticalGroup(
+                layout2.createSequentialGroup()
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[32])
+                                .addComponent(registerBankAndMemory[32]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[33])
+                                .addComponent(registerBankAndMemory[33]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[34])
+                                .addComponent(registerBankAndMemory[34]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[35])
+                                .addComponent(registerBankAndMemory[35]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[36])
+                                .addComponent(registerBankAndMemory[36]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[37])
+                                .addComponent(registerBankAndMemory[37]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[38])
+                                .addComponent(registerBankAndMemory[38]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[39])
+                                .addComponent(registerBankAndMemory[39]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[40])
+                                .addComponent(registerBankAndMemory[40]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[41])
+                                .addComponent(registerBankAndMemory[41]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[42])
+                                .addComponent(registerBankAndMemory[42]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[43])
+                                .addComponent(registerBankAndMemory[43]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[44])
+                                .addComponent(registerBankAndMemory[44]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[45])
+                                .addComponent(registerBankAndMemory[45]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[46])
+                                .addComponent(registerBankAndMemory[46]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[47])
+                                .addComponent(registerBankAndMemory[47]))
+        );
+        layout2.setHorizontalGroup(
+                layout2.createSequentialGroup()
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[32])
+                                .addComponent(registerBankAndMemoryLabels[33])
+                                .addComponent(registerBankAndMemoryLabels[34])
+                                .addComponent(registerBankAndMemoryLabels[35])
+                                .addComponent(registerBankAndMemoryLabels[36])
+                                .addComponent(registerBankAndMemoryLabels[37])
+                                .addComponent(registerBankAndMemoryLabels[38])
+                                .addComponent(registerBankAndMemoryLabels[39])
+                                .addComponent(registerBankAndMemoryLabels[40])
+                                .addComponent(registerBankAndMemoryLabels[41])
+                                .addComponent(registerBankAndMemoryLabels[42])
+                                .addComponent(registerBankAndMemoryLabels[43])
+                                .addComponent(registerBankAndMemoryLabels[44])
+                                .addComponent(registerBankAndMemoryLabels[45])
+                                .addComponent(registerBankAndMemoryLabels[46])
+                                .addComponent(registerBankAndMemoryLabels[47]))
+                        .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[32])
+                                .addComponent(registerBankAndMemory[33])
+                                .addComponent(registerBankAndMemory[34])
+                                .addComponent(registerBankAndMemory[35])
+                                .addComponent(registerBankAndMemory[36])
+                                .addComponent(registerBankAndMemory[37])
+                                .addComponent(registerBankAndMemory[38])
+                                .addComponent(registerBankAndMemory[39])
+                                .addComponent(registerBankAndMemory[40])
+                                .addComponent(registerBankAndMemory[41])
+                                .addComponent(registerBankAndMemory[42])
+                                .addComponent(registerBankAndMemory[43])
+                                .addComponent(registerBankAndMemory[44])
+                                .addComponent(registerBankAndMemory[45])
+                                .addComponent(registerBankAndMemory[46])
+                                .addComponent(registerBankAndMemory[47]))
+        );
+
+        layout3.setVerticalGroup(
+                layout3.createSequentialGroup()
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[0])
+                                .addComponent(registerBankAndMemory[0])
+                                .addComponent(registerBankAndMemoryLabels[1])
+                                .addComponent(registerBankAndMemory[1])
+                                .addComponent(registerBankAndMemoryLabels[2])
+                                .addComponent(registerBankAndMemory[2])
+                                .addComponent(registerBankAndMemoryLabels[3])
+                                .addComponent(registerBankAndMemory[3])
+                                .addComponent(registerBankAndMemoryLabels[4])
+                                .addComponent(registerBankAndMemory[4])
+                                .addComponent(registerBankAndMemoryLabels[5])
+                                .addComponent(registerBankAndMemory[5])
+                                .addComponent(registerBankAndMemoryLabels[6])
+                                .addComponent(registerBankAndMemory[6])
+                                .addComponent(registerBankAndMemoryLabels[7])
+                                .addComponent(registerBankAndMemory[7]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[8])
+                                .addComponent(registerBankAndMemory[8])
+                                .addComponent(registerBankAndMemoryLabels[9])
+                                .addComponent(registerBankAndMemory[9])
+                                .addComponent(registerBankAndMemoryLabels[10])
+                                .addComponent(registerBankAndMemory[10])
+                                .addComponent(registerBankAndMemoryLabels[11])
+                                .addComponent(registerBankAndMemory[11])
+                                .addComponent(registerBankAndMemoryLabels[12])
+                                .addComponent(registerBankAndMemory[12])
+                                .addComponent(registerBankAndMemoryLabels[13])
+                                .addComponent(registerBankAndMemory[13])
+                                .addComponent(registerBankAndMemoryLabels[14])
+                                .addComponent(registerBankAndMemory[14])
+                                .addComponent(registerBankAndMemoryLabels[15])
+                                .addComponent(registerBankAndMemory[15]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[16])
+                                .addComponent(registerBankAndMemory[16])
+                                .addComponent(registerBankAndMemoryLabels[17])
+                                .addComponent(registerBankAndMemory[17])
+                                .addComponent(registerBankAndMemoryLabels[18])
+                                .addComponent(registerBankAndMemory[18])
+                                .addComponent(registerBankAndMemoryLabels[19])
+                                .addComponent(registerBankAndMemory[19])
+                                .addComponent(registerBankAndMemoryLabels[20])
+                                .addComponent(registerBankAndMemory[20])
+                                .addComponent(registerBankAndMemoryLabels[21])
+                                .addComponent(registerBankAndMemory[21])
+                                .addComponent(registerBankAndMemoryLabels[22])
+                                .addComponent(registerBankAndMemory[22])
+                                .addComponent(registerBankAndMemoryLabels[23])
+                                .addComponent(registerBankAndMemory[23]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(registerBankAndMemoryLabels[24])
+                                .addComponent(registerBankAndMemory[24])
+                                .addComponent(registerBankAndMemoryLabels[25])
+                                .addComponent(registerBankAndMemory[25])
+                                .addComponent(registerBankAndMemoryLabels[26])
+                                .addComponent(registerBankAndMemory[26])
+                                .addComponent(registerBankAndMemoryLabels[27])
+                                .addComponent(registerBankAndMemory[27])
+                                .addComponent(registerBankAndMemoryLabels[28])
+                                .addComponent(registerBankAndMemory[28])
+                                .addComponent(registerBankAndMemoryLabels[29])
+                                .addComponent(registerBankAndMemory[29])
+                                .addComponent(registerBankAndMemoryLabels[30])
+                                .addComponent(registerBankAndMemory[30])
+                                .addComponent(registerBankAndMemoryLabels[31])
+                                .addComponent(registerBankAndMemory[31]))
+        );
+        layout3.setHorizontalGroup(
+                layout3.createSequentialGroup()
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[0])
+                                .addComponent(registerBankAndMemoryLabels[8])
+                                .addComponent(registerBankAndMemoryLabels[16])
+                                .addComponent(registerBankAndMemoryLabels[24]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[0])
+                                .addComponent(registerBankAndMemory[8])
+                                .addComponent(registerBankAndMemory[16])
+                                .addComponent(registerBankAndMemory[24]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[1])
+                                .addComponent(registerBankAndMemoryLabels[9])
+                                .addComponent(registerBankAndMemoryLabels[17])
+                                .addComponent(registerBankAndMemoryLabels[25]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[1])
+                                .addComponent(registerBankAndMemory[9])
+                                .addComponent(registerBankAndMemory[17])
+                                .addComponent(registerBankAndMemory[25]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[2])
+                                .addComponent(registerBankAndMemoryLabels[10])
+                                .addComponent(registerBankAndMemoryLabels[18])
+                                .addComponent(registerBankAndMemoryLabels[26]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[2])
+                                .addComponent(registerBankAndMemory[10])
+                                .addComponent(registerBankAndMemory[18])
+                                .addComponent(registerBankAndMemory[26]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[3])
+                                .addComponent(registerBankAndMemoryLabels[11])
+                                .addComponent(registerBankAndMemoryLabels[19])
+                                .addComponent(registerBankAndMemoryLabels[27]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[3])
+                                .addComponent(registerBankAndMemory[11])
+                                .addComponent(registerBankAndMemory[19])
+                                .addComponent(registerBankAndMemory[27]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[4])
+                                .addComponent(registerBankAndMemoryLabels[12])
+                                .addComponent(registerBankAndMemoryLabels[20])
+                                .addComponent(registerBankAndMemoryLabels[28]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[4])
+                                .addComponent(registerBankAndMemory[12])
+                                .addComponent(registerBankAndMemory[20])
+                                .addComponent(registerBankAndMemory[28]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[5])
+                                .addComponent(registerBankAndMemoryLabels[13])
+                                .addComponent(registerBankAndMemoryLabels[21])
+                                .addComponent(registerBankAndMemoryLabels[29]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[5])
+                                .addComponent(registerBankAndMemory[13])
+                                .addComponent(registerBankAndMemory[21])
+                                .addComponent(registerBankAndMemory[29]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[6])
+                                .addComponent(registerBankAndMemoryLabels[14])
+                                .addComponent(registerBankAndMemoryLabels[22])
+                                .addComponent(registerBankAndMemoryLabels[30]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[6])
+                                .addComponent(registerBankAndMemory[14])
+                                .addComponent(registerBankAndMemory[22])
+                                .addComponent(registerBankAndMemory[30]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemoryLabels[7])
+                                .addComponent(registerBankAndMemoryLabels[15])
+                                .addComponent(registerBankAndMemoryLabels[23])
+                                .addComponent(registerBankAndMemoryLabels[31]))
+                        .addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(registerBankAndMemory[7])
+                                .addComponent(registerBankAndMemory[15])
+                                .addComponent(registerBankAndMemory[23])
+                                .addComponent(registerBankAndMemory[31]))
+
+        );
+
         window2.setVisible(true);
+        window3.setVisible(true);
+        window4.setVisible(true);
 
 
     }

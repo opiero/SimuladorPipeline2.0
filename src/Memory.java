@@ -64,6 +64,10 @@ public class Memory {
         this.iContent = iContent;
     }
 
+    public int getAlIMemoryDataAtIndex(int index) {
+        return AlIMemoryData.get(index);
+    }
+
     private void manageMemoryFlags (OperandType eOperand, InstructionType eType) {
 
         if (eType == InstructionType.I) {
@@ -95,8 +99,6 @@ public class Memory {
 
         else if (this.bLoad)
             this.iContent = this.AlIMemoryData.get(this.iAluOutput);
-
-        System.out.println("Memoria: " + this.AlIMemoryData);
 
 
 

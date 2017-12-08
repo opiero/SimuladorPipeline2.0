@@ -43,6 +43,14 @@ public class Processor {
         return memWb;
     }
 
+    public Memory getMemory() {
+        return memory;
+    }
+
+    public int getRegisterBankAtIndex(int index){
+        return this.AlIRegistersBank.get(index);
+    }
+
     public Processor (ArrayList<Instruction>AlInstructionMemory) {
 
         clock = new LinkedBlockingQueue<Integer>();
@@ -162,6 +170,8 @@ public class Processor {
 
         ifId.setCIr(iFetch.getInstruction());
 
+        ifId.setPC(iFetch.getiPC());
+
         ifId.setiNPC(iFetch.getiPC());
 
         iFetch.muxIFetch(bPCSel, iNPC);
@@ -204,6 +214,12 @@ public class Processor {
 
         }
 
+        else if(decode.getCIr().getEType() == InstructionType.NOP){
+            idEx.setiA(0);
+            idEx.setiB(0);
+            idEx.setiImmediateValue(0);
+        }
+
     }
 
     private void idExExecute () {
@@ -215,7 +231,7 @@ public class Processor {
 
         }
 
-        else if (idEx.getCir().getEType() == InstructionType.I) {
+        else if (idEx.getCir().getEType() == InstructionType.I || idEx.getCir().getEType() == InstructionType.NOP) {
 
             execute.setiA(idEx.getiA());
             execute.setiB(idEx.getiB());
@@ -224,7 +240,6 @@ public class Processor {
 
 
         }
-
     }
 
 
@@ -304,71 +319,6 @@ public class Processor {
     }
 
 
-   public void run () {
-
-       Queue<PipelineStates> states = new LinkedBlockingQueue<PipelineStates>();
-       Instruction instruction;
-
-       states.add(PipelineStates.IFetch);
-
-       int i = 0;
-
-       while (!states.isEmpty()) {
-
-           PipelineStates actual = states.poll();
-
-
-           switch (actual){
-
-               case IFetch:
-                   states.add(PipelineStates.Decode);
-                   iFetch.setInstruction(AlInstructionMemory.get(i));
-                   iFetchIfId(false, i);
-                   if (i < this.AlInstructionMemory.size() - 1) {
-
-                       states.add(PipelineStates.IFetch);
-                       i++;
-
-                   }
-                   break;
-
-               case Decode:
-                   states.add(PipelineStates.Execute);
-                   ifIdDecode();
-                   decodeIdEx();
-                   break;
-
-               case Execute:
-                   states.add(PipelineStates.Memory);
-                   idExExecute();
-                   executeExMem();
-                   break;
-
-               case Memory:
-                   states.add(PipelineStates.WriteBack);
-                   exMemMemory();
-                   memoryMemWb();
-                   break;
-
-               case WriteBack:
-                   memWbWriteBack();
-                   System.out.println("Registradores: " + this.AlIRegistersBank);
-                   System.out.println();
-                   System.out.println();
-                   break;
-
-
-           }
-
-
-
-
-       }
-
-
-
-   }
-
    public void runNextClock (int actualClock) {
 
 
@@ -423,9 +373,6 @@ public class Processor {
 
                case WriteBack:
                    memWbWriteBack();
-                   System.out.println("Registradores: " + this.AlIRegistersBank);
-                   System.out.println();
-                   System.out.println();
                    break;
 
 
