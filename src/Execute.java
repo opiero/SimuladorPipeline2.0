@@ -1,3 +1,6 @@
+/**
+ * Represents the execute state.
+ */
 public class Execute {
 
     private int iA, iB;

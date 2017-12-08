@@ -1,3 +1,6 @@
+/**
+ * This class represents the MEMWB register.
+ */
 public class MemWb {
 
     private Instruction CIr;
@@ -60,6 +63,9 @@ public class MemWb {
         this.iDestiny = iDestiny;
     }
 
+    /**
+     * Constructor. Sets the Control signal as false.
+     */
     public MemWb () {
         this.bControl = false;
     }

@@ -1,3 +1,6 @@
+/**
+ * This class represents the IDEX register
+ */
 public class IdEx {
 
     private Instruction Cir;

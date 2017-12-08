@@ -1,3 +1,6 @@
+/**
+ * Represents the writeback state
+ */
 public class WriteBack {
 
     private int iAluOutput;
@@ -40,10 +43,17 @@ public class WriteBack {
         this.iRd = iRd;
     }
 
+    /**
+     * Constructor. Sets the control signal as false.
+     */
     public WriteBack () {
         this.bControl = false;
     }
 
+    /**
+     * Represents the mux that chooses between aluoutput or lmd
+     * @return
+     */
     public int aluOutputOrLMD() {
         if (this.bControl)
             return iLMD;

@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ * Represents the memory state
+ */
 public class Memory {
 
     private ArrayList<Integer> AlIMemoryData;
@@ -68,6 +71,11 @@ public class Memory {
         return AlIMemoryData.get(index);
     }
 
+    /**
+     * Manages the memory's flags
+     * @param eOperand Operand type
+     * @param eType Instruction Type
+     */
     private void manageMemoryFlags (OperandType eOperand, InstructionType eType) {
 
         if (eType == InstructionType.I) {
@@ -90,6 +98,11 @@ public class Memory {
 
     }
 
+    /**
+     * manages the memory flags and writes or load an instruction
+     * @param eOperand Operand type
+     * @param eType Instruction type
+     */
     public void manageMemory (OperandType eOperand, InstructionType eType) {
 
         manageMemoryFlags(eOperand, eType);
@@ -104,6 +117,9 @@ public class Memory {
 
     }
 
+    /**
+     * Constructor. Memory size is set to 32
+     */
     public Memory() {
 
         final int memorySize = 32;

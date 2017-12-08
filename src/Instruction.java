@@ -1,3 +1,6 @@
+/**
+ * This class stores the necessary data from a instruction
+ */
 public class Instruction {
 
 
@@ -69,6 +72,15 @@ public class Instruction {
         return instruction;
     }
 
+    /**
+     * Constructor for an r type instruction
+     * @param EOperand Operand type
+     * @param iRt t Registers
+     * @param iRs s Register
+     * @param iRd d Register
+     * @param iShamt Shamt
+     * @param instruction the string with the instruction
+     */
     public Instruction(OperandType EOperand, int iRt, int iRs, int iRd, int iShamt, String instruction) {
         this.EOperand = EOperand;
         this.iRt = iRt;
@@ -80,6 +92,15 @@ public class Instruction {
 
     }
 
+    /**
+     * Constructor for an i type instruction
+     * @param iITypeRs s register
+     * @param iITypeRt t register
+     * @param iImmediateValue immediate value
+     * @param iTarget target value
+     * @param EOperand Operand type
+     * @param instruction instruction string
+     */
     public Instruction(int iITypeRs, int iITypeRt, int iImmediateValue, int iTarget, OperandType EOperand, String instruction) {
         this.iITypeRs = iITypeRs;
         this.iITypeRt = iITypeRt;
@@ -90,6 +111,13 @@ public class Instruction {
         this.instruction = instruction;
     }
 
+    /**
+     * Constructor for a j type instruction
+     * @param EOperand Operand type
+     * @param iData data value
+     * @param iTarget target value
+     * @param instruction instruction string
+     */
     public Instruction(OperandType EOperand, int iData, int iTarget, String instruction) {
         this.EOperand = EOperand;
         this.iData = iData;
@@ -99,6 +127,11 @@ public class Instruction {
 
     }
 
+    /**
+     * Constructor for a nop instruction
+     * @param EOperand Operand type
+     * @param instruction instruction string
+     */
     public Instruction(OperandType EOperand, String instruction) {
 
         if (EOperand == OperandType.NOP) {

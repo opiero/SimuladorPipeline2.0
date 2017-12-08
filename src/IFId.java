@@ -1,3 +1,6 @@
+/**
+ * This class represents the IFID register
+ */
 public class IFId {
 
     private Instruction CIr;

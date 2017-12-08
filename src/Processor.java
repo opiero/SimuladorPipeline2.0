@@ -3,12 +3,8 @@ import java.util.Collections;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-// todo mastigar as instruçoes
-
-//todo interface usuario
-
-//todo
-
+/** This class simulates a processor
+ * */
 public class Processor {
 
     private ArrayList<Integer> AlIRegistersBank;
@@ -51,15 +47,23 @@ public class Processor {
         return this.AlIRegistersBank.get(index);
     }
 
+
+    /**
+     * This is the processor constructor.
+     * @param AlInstructionMemory ArrayList with all the instructions
+     */
     public Processor (ArrayList<Instruction>AlInstructionMemory) {
 
+        //initializing queues. Will be needed at the run method
         clock = new LinkedBlockingQueue<Integer>();
         states = new LinkedBlockingQueue<PipelineStates>();
 
-        AlIRegistersBank = new ArrayList<Integer>();
+       //creating the register bank
+       AlIRegistersBank = new ArrayList<Integer>();
        for (int i = 0; i < 16; i++)
            AlIRegistersBank.add(0);
 
+        //initializing attributes
         this.AlInstructionMemory =  AlInstructionMemory;
         iFetch = new IFetch();
         ifId = new IFId();
@@ -74,11 +78,19 @@ public class Processor {
 
     }
 
+    /**
+     * This method writes on the given register
+     */
     private void writeRegisters(){
         this.AlIRegistersBank.set(decode.getiOldRd(), decode.getiOldData());
         decode.setbWriteRegister(false);
     }
 
+    /**
+     * Executes an R command
+     * @param eOperand The type of the operand
+     * @return returns the result of the operation
+     */
     private int executeRCommand (OperandType eOperand) {
 
         switch (eOperand) {
@@ -107,6 +119,11 @@ public class Processor {
 
     }
 
+    /**
+     * Executes an I command
+     * @param eOperand The type of the operand
+     * @return returns the result of the operation
+     */
     private int executeICommand (OperandType eOperand) {
 
         switch (eOperand) {
@@ -147,6 +164,12 @@ public class Processor {
 
     }
 
+    /**
+     * Executes a command
+     * @param eType Type of the instruction
+     * @param eOperand Type of the operand
+     * @return the result of the given command
+     */
     private int executeCommand (InstructionType eType, OperandType eOperand) {
 
         int exec_return = 0;
@@ -156,16 +179,15 @@ public class Processor {
         else if (eType == InstructionType.I)
             exec_return = executeICommand(eOperand);
 
-        /*else if (eType == InstructionType.J) {
-
-           //shits will be made
-
-        }*/
-
         return exec_return;
 
     }
 
+    /**
+     * Represents the transition of the data from the Fetch state to the IFID register
+     * @param bPCSel true if a branch is activated
+     * @param iNPC Program counter value after the branch
+     */
     private void iFetchIfId(boolean bPCSel, int iNPC){
 
         ifId.setCIr(iFetch.getInstruction());
@@ -179,6 +201,9 @@ public class Processor {
     }
 
 
+    /**
+     * Represents the transition from the IFID register to the Decode state
+     * */
     private void ifIdDecode () {
 
         decode.setCIr(ifId.getCIr());
@@ -188,6 +213,9 @@ public class Processor {
 
     }
 
+    /**
+     * Represents the transition from the decode state to the IDEX state
+     */
     private void decodeIdEx() {
 
         idEx.setCir(decode.getCIr());
@@ -222,6 +250,9 @@ public class Processor {
 
     }
 
+    /**
+     * Represents the transition from the IDEX register to the execute state
+     */
     private void idExExecute () {
 
         if (idEx.getCir().getEType() == InstructionType.R) {
@@ -243,6 +274,9 @@ public class Processor {
     }
 
 
+    /**
+     * Represents the transition from the execute state to the EXMEM register
+     */
     private void executeExMem () {
 
         exMem.setCIr(idEx.getCir());
@@ -259,6 +293,9 @@ public class Processor {
 
     }
 
+    /**
+     * Represents the transition from the EXMEM register to the Memory state
+     */
     private void exMemMemory () {
 
         memory.setbControl(exMem.isbControl());
@@ -270,6 +307,9 @@ public class Processor {
 
     }
 
+    /**
+     * Represents the transition from the memory state to the MEMWB register
+     */
     private void memoryMemWb () {
 
         memory.manageMemory(exMem.getCIr().getEOperand(), exMem.getCIr().getEType());
@@ -290,6 +330,9 @@ public class Processor {
 
     }
 
+    /**
+     * Represents to the MEMWB register to the WriteBack state
+     */
     private void memWbWriteBack () {
 
         writeBack.setiAluOutput(memWb.getiAluOutput());
@@ -319,7 +362,11 @@ public class Processor {
     }
 
 
-   public void runNextClock (int actualClock) {
+    /**
+     * Runs the given clock
+     * @param actualClock actual clock, starts from 0
+     */
+    public void runNextClock (int actualClock) {
 
 
        if (actualClock == 0) {

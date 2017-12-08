@@ -1,3 +1,6 @@
+/**
+ * Converts an instruction string to a Instruction class
+ */
 public class StringtoInstruction {
 
     private String command;
@@ -32,6 +35,10 @@ public class StringtoInstruction {
 
     }
 
+
+    /**
+     * Converts the string to a Instruction
+     */
     public void convert () {
 
         String [] fragments = command.split(" ");

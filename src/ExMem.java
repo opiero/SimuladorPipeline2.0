@@ -1,3 +1,6 @@
+/**
+ * This class represents the EXMEM register
+ */
 public class ExMem {
 
     private Instruction CIr;
@@ -58,6 +61,9 @@ public class ExMem {
         this.bControl = bControl;
     }
 
+    /**
+     * Constructor. Sets the control signal as false.
+     */
     public ExMem () {
         this.bControl = false;
     }

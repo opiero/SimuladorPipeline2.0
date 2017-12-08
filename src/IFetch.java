@@ -27,6 +27,11 @@ public class IFetch {
         this.iPC = 0;
     }
 
+    /**
+     * If bPCSel is true, the pc is set to the branch
+     * @param bPCSel true if branch
+     * @param iNPC New program counter value
+     */
     public void muxIFetch (boolean bPCSel, int iNPC) {
 
         if (bPCSel){

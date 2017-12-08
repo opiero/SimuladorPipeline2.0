@@ -1,3 +1,6 @@
+/**
+ * This class represents the decode state
+ */
 public class Decode {
 
     private Instruction CIr;
@@ -38,6 +41,10 @@ public class Decode {
         this.bWriteRegister = bWriteRegister;
     }
 
+    /**
+     * Generates the control signal
+     * @return control signal
+     */
     public boolean getControl () {
 
         boolean bControl = false;
@@ -55,6 +62,9 @@ public class Decode {
 
     }
 
+    /**
+     * Constructor. Sets the WriteRegister flag false.
+     */
     public Decode () {
         this.bWriteRegister = false;
     }
