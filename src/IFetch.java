@@ -7,7 +7,11 @@ public class IFetch {
 
     private int iPC;
 
-    Instruction instruction;
+    private Instruction instruction;
+
+    private Boolean bPCSel;
+
+    private int iNPC;
 
 
     public Instruction getInstruction() {
@@ -16,6 +20,22 @@ public class IFetch {
 
     public void setInstruction(Instruction instruction) {
         this.instruction = instruction;
+    }
+
+    public void setiNPC(int iNPC) {
+        this.iNPC = iNPC;
+    }
+
+    public void setbPCSel(Boolean bPCSel) {
+        this.bPCSel = bPCSel;
+    }
+
+    public int getiNPC() {
+        return this.iNPC;
+    }
+
+    public Boolean isBPCSel(){
+        return this.bPCSel;
     }
 
     public void incrementPC () {
@@ -28,20 +48,20 @@ public class IFetch {
 
     public IFetch() {
         this.iPC = 0;
+        this.bPCSel = false;
     }
 
     /**
      * If bPCSel is true, the pc is set to the branch
-     * @param bPCSel true if branch
-     * @param iNPC New program counter value
      */
-    public void muxIFetch (boolean bPCSel, int iNPC) {
+    public void muxIFetch () {
 
-        if (bPCSel){
-            this.iPC = iNPC;
+        if (this.bPCSel){
+            this.iPC = this.iNPC;
+            setbPCSel(false);
         }
         else{
-            incrementPC();
+            if(getiPC() < 15) incrementPC();
         }
 
     }

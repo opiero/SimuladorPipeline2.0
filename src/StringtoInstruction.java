@@ -99,11 +99,11 @@ public class StringtoInstruction {
                 break;
             case "beq":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.BEQ, command);
+                        convertOffsetToString(fragments[3]), 0, OperandType.BEQ, command);
                 break;
             case "bne":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[2]), convertRegisterStringToInteger(fragments[1]),
-                        convertImmediateValueStringToInteger(fragments[3]), 0, OperandType.BNE, command);
+                        convertOffsetToString(fragments[3]), 0, OperandType.BNE, command);
                 break;
             case "lw":
                 this.instruction = new Instruction(convertRegisterStringToInteger(fragments[3]), convertRegisterStringToInteger(fragments[1]),

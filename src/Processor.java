@@ -78,6 +78,15 @@ public class Processor {
 
     }
 
+    private void doBranch(){
+        if (exMem.getCIr().getEOperand() == OperandType.BNE){
+            if(exMem.getiAluOutput() == 1){
+                iFetch.setbPCSel(true);
+                iFetch.setiNPC(idEx.getiNPC() + execute.getiImmediateValue());
+            }
+        }
+    }
+
     /**
      * This method writes on the given register
      */
@@ -185,18 +194,18 @@ public class Processor {
 
     /**
      * Represents the transition of the data from the Fetch state to the IFID register
-     * @param bPCSel true if a branch is activated
-     * @param iNPC Program counter value after the branch
      */
-    private void iFetchIfId(boolean bPCSel, int iNPC){
+    private void iFetchIfId(){
 
         ifId.setCIr(iFetch.getInstruction());
 
         ifId.setPC(iFetch.getiPC());
 
-        ifId.setiNPC(iFetch.getiPC());
+        if(!iFetch.isBPCSel()) ifId.setiNPC(iFetch.getiPC());
 
-        iFetch.muxIFetch(bPCSel, iNPC);
+        else ifId.setiNPC(iFetch.getiNPC());
+
+        iFetch.muxIFetch();
 
     }
 
@@ -220,7 +229,7 @@ public class Processor {
 
         idEx.setCir(decode.getCIr());
 
-        idEx.setiNPC(ifId.getiNPC());
+        idEx.setiNPC(ifId.getPC());
 
         idEx.setbControl(decode.getControl());
 
@@ -291,6 +300,8 @@ public class Processor {
 
         exMem.setiTarget(exMem.getCIr().getiTarget());
 
+        doBranch();
+
     }
 
     /**
@@ -302,7 +313,7 @@ public class Processor {
 
         memory.setiAluOutput(exMem.getiAluOutput());
 
-        memory.setiBContent(this.AlIRegistersBank.get(exMem.getiB())); //OLHAR ESSA JOSSA DEPOIS
+        memory.setiBContent(this.AlIRegistersBank.get(exMem.getiB()));
 
 
     }
@@ -388,8 +399,8 @@ public class Processor {
                case IFetch:
                    states.add(PipelineStates.Decode);
                    clock.add(clock.poll() + 1);
-                   iFetch.setInstruction(AlInstructionMemory.get(actualClock));
-                   iFetchIfId(false, actualClock);
+                   iFetch.setInstruction(AlInstructionMemory.get(iFetch.getiPC()));
+                   iFetchIfId();
                    if (actualClock < this.AlInstructionMemory.size() - 1) {
                        states.add(PipelineStates.IFetch);
                        clock.add(actualClock+1);
@@ -419,6 +430,7 @@ public class Processor {
                    break;
 
                case WriteBack:
+                   clock.poll();
                    memWbWriteBack();
                    break;
 

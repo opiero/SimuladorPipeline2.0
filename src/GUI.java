@@ -157,6 +157,7 @@ public class GUI {
                 instructionI += " " + r3.getItemAt(r3.getSelectedIndex());
         }
 
+
         return instructionI;
     }
 
